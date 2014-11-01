@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 sudo yum install git nano openssl-devel
 sudo yum groupinstall "Development Tools"
 

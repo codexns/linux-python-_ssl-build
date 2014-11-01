@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 sudo apt-get install git-core build-essential libssl-dev
 
 curl -O https://www.python.org/ftp/python/3.3.3/Python-3.3.3.tgz
