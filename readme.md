@@ -18,6 +18,6 @@ The best linux distros to compile these on are:
 We pick Ubuntu since they strip out support for SSLv2, and if you compile it on another distro
 and try to run it on Ubuntu, there will be import errors.
 
-Currently this repo has scripts for Python 3.3, mostly in the service of providing `_ssl.so`
-for Sublime Text 3. I had previously compiled for Sublime Text 2 and haven't gone back and
-created scripts for Python 2.6.
+Currently this repo has scripts for Python 3.3.3 and Python 2.6.9, mostly in the service of
+providing `_ssl.so` for Sublime Text 2 and 3 on linux where Jon Skinner (jps) has not solved
+the issue of linking against various versions of OpenSSL.
