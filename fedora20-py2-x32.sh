@@ -5,9 +5,12 @@ set -e
 sudo yum install git nano openssl-devel patch
 sudo yum groupinstall "Development Tools"
 
-curl -O https://www.python.org/ftp/python/2.6.9/Python-2.6.9.tgz
+rm -Rf Python-2.6.9
+
+if [[ ! -e Python-2.6.9.tgz ]]; then
+    curl -O https://www.python.org/ftp/python/2.6.9/Python-2.6.9.tgz
+fi
 tar xvfz Python-2.6.9.tgz
-rm Python-2.6.9.tgz
 
 patch -p1 < py2-x32.patch
 

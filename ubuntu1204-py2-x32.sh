@@ -4,9 +4,12 @@ set -e
 
 sudo apt-get install git-core build-essential libssl-dev
 
-wget https://www.python.org/ftp/python/2.6.9/Python-2.6.9.tgz
+rm -Rf Python-2.6.9
+
+if [[ ! -e Python-2.6.9.tgz ]]; then
+    wget https://www.python.org/ftp/python/2.6.9/Python-2.6.9.tgz
+fi
 tar xvfz Python-2.6.9.tgz
-rm Python-2.6.9.tgz
 
 patch -p1 < py2-x32.patch
 
