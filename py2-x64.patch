@@ -1,0 +1,106 @@
+--- a/Python-2.6.9/Lib/ssl.py	2014-11-01 20:45:53.882367576 -0400
++++ b/Python-2.6.9/Lib/ssl.py	2014-11-01 20:57:25.838034306 -0400
+@@ -49,7 +49,6 @@
+ 
+ The following constants identify various SSL protocol variants:
+ 
+-PROTOCOL_SSLv2
+ PROTOCOL_SSLv3
+ PROTOCOL_SSLv23
+ PROTOCOL_TLSv1
+@@ -61,7 +60,7 @@
+ 
+ from _ssl import SSLError
+ from _ssl import CERT_NONE, CERT_OPTIONAL, CERT_REQUIRED
+-from _ssl import PROTOCOL_SSLv2, PROTOCOL_SSLv3, PROTOCOL_SSLv23, PROTOCOL_TLSv1
++from _ssl import PROTOCOL_SSLv3, PROTOCOL_SSLv23, PROTOCOL_TLSv1
+ from _ssl import RAND_status, RAND_egd, RAND_add
+ from _ssl import \
+      SSL_ERROR_ZERO_RETURN, \
+@@ -406,8 +405,6 @@
+         return "TLSv1"
+     elif protocol_code == PROTOCOL_SSLv23:
+         return "SSLv23"
+-    elif protocol_code == PROTOCOL_SSLv2:
+-        return "SSLv2"
+     elif protocol_code == PROTOCOL_SSLv3:
+         return "SSLv3"
+     else:
+--- a/Python-2.6.9/Lib/test/test_ssl.py	2014-11-01 20:54:40.932825849 -0400
++++ b/Python-2.6.9/Lib/test/test_ssl.py	2014-11-01 20:59:20.821230653 -0400
+@@ -59,7 +59,6 @@
+                 raise
+ 
+     def test_constants(self):
+-        ssl.PROTOCOL_SSLv2
+         ssl.PROTOCOL_SSLv23
+         ssl.PROTOCOL_SSLv3
+         ssl.PROTOCOL_TLSv1
+@@ -850,19 +849,6 @@
+             bad_cert_test(os.path.join(os.path.dirname(__file__) or os.curdir,
+                                        "badkey.pem"))
+ 
+-        def test_protocol_sslv2(self):
+-            """Connecting to an SSLv2 server with various client options"""
+-            if test_support.verbose:
+-                sys.stdout.write("\ntest_protocol_sslv2 disabled, "
+-                                 "as it fails on OpenSSL 1.0.0+")
+-            return
+-            try_protocol_combo(ssl.PROTOCOL_SSLv2, ssl.PROTOCOL_SSLv2, True)
+-            try_protocol_combo(ssl.PROTOCOL_SSLv2, ssl.PROTOCOL_SSLv2, True, ssl.CERT_OPTIONAL)
+-            try_protocol_combo(ssl.PROTOCOL_SSLv2, ssl.PROTOCOL_SSLv2, True, ssl.CERT_REQUIRED)
+-            try_protocol_combo(ssl.PROTOCOL_SSLv2, ssl.PROTOCOL_SSLv23, True)
+-            try_protocol_combo(ssl.PROTOCOL_SSLv2, ssl.PROTOCOL_SSLv3, False)
+-            try_protocol_combo(ssl.PROTOCOL_SSLv2, ssl.PROTOCOL_TLSv1, False)
+-
+         def test_protocol_sslv23(self):
+             """Connecting to an SSLv23 server with various client options"""
+             if test_support.verbose:
+@@ -898,7 +884,6 @@
+             try_protocol_combo(ssl.PROTOCOL_SSLv3, ssl.PROTOCOL_SSLv3, True)
+             try_protocol_combo(ssl.PROTOCOL_SSLv3, ssl.PROTOCOL_SSLv3, True, ssl.CERT_OPTIONAL)
+             try_protocol_combo(ssl.PROTOCOL_SSLv3, ssl.PROTOCOL_SSLv3, True, ssl.CERT_REQUIRED)
+-            try_protocol_combo(ssl.PROTOCOL_SSLv3, ssl.PROTOCOL_SSLv2, False)
+             try_protocol_combo(ssl.PROTOCOL_SSLv3, ssl.PROTOCOL_SSLv23, False)
+             try_protocol_combo(ssl.PROTOCOL_SSLv3, ssl.PROTOCOL_TLSv1, False)
+ 
+@@ -911,7 +896,6 @@
+             try_protocol_combo(ssl.PROTOCOL_TLSv1, ssl.PROTOCOL_TLSv1, True)
+             try_protocol_combo(ssl.PROTOCOL_TLSv1, ssl.PROTOCOL_TLSv1, True, ssl.CERT_OPTIONAL)
+             try_protocol_combo(ssl.PROTOCOL_TLSv1, ssl.PROTOCOL_TLSv1, True, ssl.CERT_REQUIRED)
+-            try_protocol_combo(ssl.PROTOCOL_TLSv1, ssl.PROTOCOL_SSLv2, False)
+             try_protocol_combo(ssl.PROTOCOL_TLSv1, ssl.PROTOCOL_SSLv3, False)
+             try_protocol_combo(ssl.PROTOCOL_TLSv1, ssl.PROTOCOL_SSLv23, False)
+ 
+--- a/Python-2.6.9/Modules/_ssl.c	2014-11-01 20:55:25.290999283 -0400
++++ b/Python-2.6.9/Modules/_ssl.c	2014-11-01 21:01:57.742768211 -0400
+@@ -302,10 +302,6 @@
+         self->ctx = SSL_CTX_new(TLSv1_method()); /* Set up context */
+     else if (proto_version == PY_SSL_VERSION_SSL3)
+         self->ctx = SSL_CTX_new(SSLv3_method()); /* Set up context */
+-#ifndef OPENSSL_NO_SSL2
+-    else if (proto_version == PY_SSL_VERSION_SSL2)
+-        self->ctx = SSL_CTX_new(SSLv2_method()); /* Set up context */
+-#endif
+     else if (proto_version == PY_SSL_VERSION_SSL23)
+         self->ctx = SSL_CTX_new(SSLv23_method()); /* Set up context */
+     PySSL_END_ALLOW_THREADS
+@@ -1746,8 +1742,6 @@
+                             PY_SSL_CERT_REQUIRED);
+ 
+     /* protocol versions */
+-    PyModule_AddIntConstant(m, "PROTOCOL_SSLv2",
+-                            PY_SSL_VERSION_SSL2);
+     PyModule_AddIntConstant(m, "PROTOCOL_SSLv3",
+                             PY_SSL_VERSION_SSL3);
+     PyModule_AddIntConstant(m, "PROTOCOL_SSLv23",
+--- a/Python-2.6.9/setup.py	2014-11-01 21:47:31.465606970 -0400
++++ b/Python-2.6.9/setup.py	2014-11-01 21:48:21.823511452 -0400
+@@ -410,6 +410,7 @@
+         lib_dirs = self.compiler.library_dirs + [
+             '/lib64', '/usr/lib64',
+             '/lib', '/usr/lib',
++            '/usr/lib/x86_64-linux-gnu'
+             ]
+         inc_dirs = self.compiler.include_dirs + ['/usr/include']
+         exts = []
