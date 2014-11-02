@@ -14,7 +14,7 @@ tar xvfz Python-2.6.9.tgz
 patch -p1 < py2-x32.patch
 
 cd Python-2.6.9/
-./configure --host=i686-pc-linux-gnu --build=i686-pc-linux-gnu
+./configure --host=i686-pc-linux-gnu --build=i686-pc-linux-gnu --enable-unicode=ucs4
 make
 
 cd ..

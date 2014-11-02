@@ -15,7 +15,7 @@ tar xvfz Python-2.6.9.tgz
 patch -p1 < py2-x32.patch
 
 cd Python-2.6.9
-./configure
+./configure --enable-unicode=ucs4
 make
 
 cd ..
