@@ -16,5 +16,5 @@ cd Python-3.3.3/
 make
 
 cd ..
-mkdir -p st3_linux_x64/libssl-1.0.0-versioned
-cp Python-3.3.3/build/lib.linux-x86_64-3.3/_ssl.cpython-33m.so st3_linux_x64/libssl-1.0.0-versioned/
+mkdir -p st3_linux_x64/libssl-1.0.0
+cp Python-3.3.3/build/lib.linux-x86_64-3.3/_ssl.cpython-33m.so st3_linux_x64/libssl-1.0.0/

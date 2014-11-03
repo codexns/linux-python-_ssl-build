@@ -18,5 +18,5 @@ cd Python-2.6.9/
 make
 
 cd ..
-mkdir -p st2_linux_x64/libssl-1.0.0-versioned
-cp Python-2.6.9/build/lib.linux-x86_64-2.6/_ssl.so st2_linux_x64/libssl-1.0.0-versioned/
+mkdir -p st2_linux_x64/libssl-1.0.0
+cp Python-2.6.9/build/lib.linux-x86_64-2.6/_ssl.so st2_linux_x64/libssl-1.0.0/
